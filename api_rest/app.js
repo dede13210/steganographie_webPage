@@ -1,36 +1,35 @@
 const express = require('express');
 const multer = require('multer');
 const { encodeText, decodeText } = require('./steganography');
-
 const app = express();
 const port = 3000;
-const key = "azertyqwerty"
+const key = "azertyqwerty";
 
 // Middleware for handling file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Endpoint for encoding text into an image
-app.post('/api/encode', upload.single('image'), (req, res) => {
-  try {
-    // Extract data from the request
-    const textToEncode = req.body.data; // Assuming text is in req.body directly
-    const imageBuffer = req.file.buffer;
+app.post('/api/encode', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'data', maxCount: 1 }]), (req, res) => {
+    try {
+        // Extract image buffer and text file from the request
+        const imageBuffer = req.files['image'][0].buffer;
+        const textFileBuffer = req.files['data'][0].buffer;
+        
+        // Convert the buffer to a string
+        const textToEncode = textFileBuffer.toString('utf-8');
 
-    // Ensure textToEncode is a string
-    const textToEncodeString = String(textToEncode);
+        // Encode data into the image
+        const encodedImageBuffer = encodeText(imageBuffer, textToEncode, key);
 
-    // Encode data into the image
-    const encodedImageBuffer = encodeText(imageBuffer, textToEncodeString, key);
-
-    // Respond with the encoded image
-    res.contentType('image/png');
-    res.send(encodedImageBuffer);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+        // Respond with the encoded image
+        res.contentType('image/png');
+        res.send(encodedImageBuffer);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
+
 
 // Endpoint for decoding text from an image
 app.post('/api/decode', upload.single('image'), (req, res) => {
@@ -50,7 +49,6 @@ app.post('/api/decode', upload.single('image'), (req, res) => {
   }
 });
 
-// Start the server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Server is running on http://localhost:${port}`);
 });
