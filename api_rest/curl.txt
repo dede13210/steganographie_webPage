@@ -2,9 +2,4 @@ curl -X POST -H "Content-Type: multipart/form-data" -F "image=@./image.png" -F "
 
 
 
-curl -X POST -H "Content-Type: multipart/form-data" -F "image=@./encoded_image.png" http://localhost:3000/api/decode
-
-
-
-
 curl -X POST -H "Content-Type: multipart/form-data" -F "image=@./encoded_image.png" http://localhost:3000/api/decode > text_decode.txt
