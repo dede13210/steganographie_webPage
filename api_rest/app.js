@@ -8,8 +8,7 @@ const key = "azertyqwerty"
 
 // Middleware for handling file uploads
 const storage = multer.memoryStorage();
-const upload = multer({
-  storage: storage });
+const upload = multer({ storage: storage });
 
 // Endpoint for encoding text into an image
 app.post('/api/encode', upload.single('image'), (req, res) => {
