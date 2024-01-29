@@ -1,7 +1,0 @@
-{
-    "decodeEndpoint": "decode",
-    "encodeEndpoint": "encode",
-    "successMessage": "Successful call!",
-    "decodedPrefix": "decoded_",
-    "encodedPrefix": "encoded_"
-}
